@@ -1,0 +1,12 @@
+paths:
+  /users/:
+    get:
+      tags:
+      - User
+      summary: Access to unprotected resource
+      security: [] 
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Success Message with user list
