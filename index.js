@@ -1,21 +1,30 @@
-const express = require("express");
-const cors = require("cors");
-const swaggerController = require("./controllers/swaggerController");
-const authController = require("./controllers/authController");
-const usersController = require("./controllers/usersController");
-const protectedController = require("./controllers/protectedController");
+const express = require('express')
+const cors = require('cors')
+const sequelize = require('./config/database')
 
-const app = express();
-const port = 3000;
+const usersController = require('./controllers/usersController')
+const authController = require('./controllers/authController')
+const protectedController = require('./controllers/protectedController')
+const swaggerController = require('./controllers/swaggerController')
+const torneiosController = require('./controllers/torneiosController')
 
-app.use(cors());
-app.use(express.json());
+const app = express()
+const port = process.env.PORT || 3000
 
-swaggerController.setupSwagger(app, port);
+app.use(cors())
+app.use(express.json())
 
-app.get("/users", usersController.getUsers);
-app.get("/protected", authController.auth, protectedController.getProtected);
+swaggerController(app)
 
-app.listen(port, function () {
-    console.log(`app running on localhost:${port}`);
-});
+app.get('/users', usersController.getUsers)
+app.get('/protected', authController.auth, protectedController.getProtected)
+
+app.get('/torneios', torneiosController.getTorneios)
+app.post('/torneios', authController.auth, torneiosController.criarTorneio)
+
+sequelize.sync().then(() => {
+  console.log('Base de dados trancada e carregada')
+  app.listen(port, () => {
+    console.log(`Servidor a rasgar asfalto na porta ${port}`)
+  })
+}).catch(err => console.log('O motor gripou', err))

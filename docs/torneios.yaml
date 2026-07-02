@@ -1,0 +1,31 @@
+paths:
+  /torneios:
+    get:
+      tags:
+        - Torneios
+      summary: Devolve todos os torneios
+      responses:
+        200:
+          description: Sucesso brutal
+    post:
+      tags:
+        - Torneios
+      summary: Cria um torneio novo
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                jogo:
+                  type: string
+      responses:
+        201:
+          description: Torneio criado com estrondo
+        401:
+          description: Baza daqui que não tens autorização

@@ -13,7 +13,10 @@
   "dependencies": {
     "basic-auth": "^2.0.1",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "mysql2": "^3.22.5",
+    "sequelize": "^6.37.8",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"
   }
