@@ -1,0 +1,125 @@
+paths:
+  /torneios/{torneioId}/equipas:
+    get:
+      tags:
+        - Equipas
+      summary: Lista todas as equipas de um torneio
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: torneioId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Lista de equipas obtida com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Equipa'
+        401:
+          description: Token em falta ou inválido
+        404:
+          description: Torneio não encontrado
+
+    post:
+      tags:
+        - Equipas
+      summary: Cria uma nova equipa num torneio
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: torneioId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - numeroJogadores
+              properties:
+                nome:
+                  type: string
+                  example: "Equipa Alpha"
+                numeroJogadores:
+                  type: integer
+                  example: 5
+      responses:
+        201:
+          description: Equipa criada com sucesso
+        401:
+          description: Token em falta ou inválido
+        404:
+          description: Torneio não encontrado
+
+  /torneios/{torneioId}/equipas/{id}:
+    put:
+      tags:
+        - Equipas
+      summary: Atualiza uma equipa de um torneio
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: torneioId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                numeroJogadores:
+                  type: integer
+      responses:
+        200:
+          description: Equipa atualizada com sucesso
+        401:
+          description: Token em falta ou inválido
+        404:
+          description: Equipa ou torneio não encontrado
+
+    delete:
+      tags:
+        - Equipas
+      summary: Elimina uma equipa de um torneio
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: torneioId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Equipa eliminada com sucesso
+        401:
+          description: Token em falta ou inválido
+        404:
+          description: Equipa ou torneio não encontrado

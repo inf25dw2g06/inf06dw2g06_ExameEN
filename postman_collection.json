@@ -1,0 +1,222 @@
+{
+  "info": {
+    "name": "Torneios API",
+    "_postman_id": "torneios-api-collection",
+    "description": "Collection completa para a API de Gestão de Torneios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "torneio_id", "value": "1" },
+    { "key": "equipa_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login - obter token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.access_token) {",
+                  "  pm.collectionVariables.set('token', json.access_token);",
+                  "  console.log('Token guardado com sucesso');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{base_url}}/auth/token"
+          }
+        },
+        {
+          "name": "Login - credenciais erradas (401)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"errada\"\n}"
+            },
+            "url": "{{base_url}}/auth/token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Listar todos os users",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/users"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Protected",
+      "item": [
+        {
+          "name": "Aceder a recurso protegido",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/protected"
+          }
+        },
+        {
+          "name": "Aceder sem token (401)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/protected"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Torneios",
+      "item": [
+        {
+          "name": "Listar torneios do utilizador",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/torneios"
+          }
+        },
+        {
+          "name": "Criar torneio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set('torneio_id', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Torneio de Teste\",\n  \"jogo\": \"Valorant\"\n}"
+            },
+            "url": "{{base_url}}/torneios"
+          }
+        },
+        {
+          "name": "Atualizar torneio",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Torneio Atualizado\",\n  \"jogo\": \"CS2\"\n}"
+            },
+            "url": "{{base_url}}/torneios/{{torneio_id}}"
+          }
+        },
+        {
+          "name": "Apagar torneio",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/torneios/{{torneio_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Equipas",
+      "item": [
+        {
+          "name": "Listar equipas de um torneio",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/torneios/{{torneio_id}}/equipas"
+          }
+        },
+        {
+          "name": "Criar equipa num torneio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set('equipa_id', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Equipa Nova\",\n  \"numeroJogadores\": 5\n}"
+            },
+            "url": "{{base_url}}/torneios/{{torneio_id}}/equipas"
+          }
+        },
+        {
+          "name": "Atualizar equipa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Equipa Atualizada\",\n  \"numeroJogadores\": 6\n}"
+            },
+            "url": "{{base_url}}/torneios/{{torneio_id}}/equipas/{{equipa_id}}"
+          }
+        },
+        {
+          "name": "Apagar equipa",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/torneios/{{torneio_id}}/equipas/{{equipa_id}}"
+          }
+        }
+      ]
+    }
+  ]
+}
